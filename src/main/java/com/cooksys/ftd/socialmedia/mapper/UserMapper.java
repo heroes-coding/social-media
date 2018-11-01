@@ -19,7 +19,7 @@ public interface UserMapper {
 
 	List<UserDto> entitiesToDtos(List<User> entities);
 
-	List<User> dtosToEntities(List<User> dtos);
+	List<User> dtosToEntities(List<UserDto> dtos);
 
 	@Mappings({ 
 		@Mapping(target = "username", source = "credentials.username"),

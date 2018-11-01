@@ -1,6 +1,7 @@
 package com.cooksys.ftd.socialmedia.entity;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -47,6 +49,31 @@ public class User {
 	@JoinColumn
 	@OneToOne(orphanRemoval = true, cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	private Profile profile;
+	
+	@JoinColumn
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+	private Set<Tweet> likes;
+	
+	@JoinColumn
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+	private Set<Tweet> mentions;
+	
+
+	public Set<Tweet> getLikes() {
+		return likes;
+	}
+
+	public void setLikes(Set<Tweet> likes) {
+		this.likes = likes;
+	}
+
+	public Set<Tweet> getMentions() {
+		return mentions;
+	}
+
+	public void setMentions(Set<Tweet> mentions) {
+		this.mentions = mentions;
+	}
 
 	public Integer getId() {
 		return id;

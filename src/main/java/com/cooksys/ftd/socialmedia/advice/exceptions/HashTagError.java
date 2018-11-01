@@ -1,15 +1,15 @@
 package com.cooksys.ftd.socialmedia.advice.exceptions;
 
-public class UserError extends Exception {
-
+public class HashTagError extends Exception {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6202228025233570390L;
+	private static final long serialVersionUID = -4816761787629170347L;
 	private String message;
-
-	public UserError(String message) {
-		this.message = String.format("User error: %s", message);
+	
+	public HashTagError(String message) {
+		this.message = String.format("Hash tag error: %s", message);
 	}
 
 	public String getMessage() {

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cooksys.ftd.socialmedia.advice.exceptions.UserError;
+import com.cooksys.ftd.socialmedia.dto.CredentialDto;
 import com.cooksys.ftd.socialmedia.dto.CredentialProfileDto;
 import com.cooksys.ftd.socialmedia.dto.UserDto;
 import com.cooksys.ftd.socialmedia.entity.User;
@@ -30,13 +31,51 @@ public class UserService {
         return userMapper.entitiesToDtos(this.userRepository.findAll());
     }
     
-    public UserDto getUser(String username) throws UserError {
-    	User oldUser = userRepository.getUserByUsername(username);
+    public boolean userExists(String username) {
+    	User user = userRepository.getUserByUsername(username);
+    	return user != null;
+    }
+
+    public User getUser(CredentialDto credentials) throws UserError {
+    	User user = getUser(credentials.getUsername());
+    	checkCredentials(user, credentials);
+    	return user;
+    }
+    
+    public User getUser(String username) throws UserError {
+    	User oldUser = userRepository.getUserByUsernameAndDeletedFalse(username);
     	if (oldUser == null) {
     		throw new UserError(String.format("No user with username: %s",username));
     	}
-    	return userMapper.entityToDto(oldUser);
+    	return oldUser;
     }
+    
+    public UserDto getUserDto(String username) throws UserError {
+    	return userMapper.entityToDto(getUser(username));
+    }
+    
+    private void checkCredentials(User user, CredentialDto credentials) throws UserError {
+    	// checks passed credentials against a passed user
+    	
+    	if (credentials.getUsername() == null) {
+			throw new UserError("Missing username");
+		} else if (credentials.getPassword() == null) {
+			throw new UserError("Missing password");
+		} else if (!credentials.getUsername().equals(user.getUsername()) || 
+				!credentials.getPassword().equals(user.getPassword())) {
+			throw new UserError("Invalid Credentials");
+		}
+    }
+    
+
+    public UserDto deleteUser(CredentialDto credentials, String username) throws UserError {
+    	User user = getUser(username);
+    	checkCredentials(user,credentials);
+    	user.setDeleted(true);
+    	userRepository.save(user);
+    	return userMapper.entityToDto(user);
+    }
+
     
 	public UserDto addUser(CredentialProfileDto dto) throws UserError {
 		User newUser = userMapper.CredentialProfileDtoToUser(dto);

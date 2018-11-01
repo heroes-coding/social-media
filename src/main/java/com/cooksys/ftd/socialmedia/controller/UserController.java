@@ -3,6 +3,7 @@ package com.cooksys.ftd.socialmedia.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.ftd.socialmedia.advice.exceptions.UserError;
+import com.cooksys.ftd.socialmedia.dto.CredentialDto;
 import com.cooksys.ftd.socialmedia.dto.CredentialProfileDto;
 import com.cooksys.ftd.socialmedia.dto.UserDto;
 import com.cooksys.ftd.socialmedia.service.UserService;
@@ -26,14 +28,19 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@PatchMapping("users/{username}")
+	@PatchMapping("users/@{username}")
 	public UserDto updateUser(@RequestBody CredentialProfileDto dto, @PathVariable("username") String username) throws UserError {
 		return this.userService.updateUser(username, dto);
 	}
 	
 	@GetMapping("users/{username}")
 	public UserDto getUser(@PathVariable("username") String username) throws UserError {
-		return this.userService.getUser(username);
+		return this.userService.getUserDto(username);
+	}
+	
+	@DeleteMapping("users/@{username}")
+	public UserDto deleteUser(@RequestBody CredentialDto credentials, @PathVariable("username") String username) throws UserError {
+		return this.userService.deleteUser(credentials,username);
 	}
 
 	@GetMapping("users")
