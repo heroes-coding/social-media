@@ -2,12 +2,10 @@ package com.cooksys.ftd.socialmedia.dto;
 
 import java.sql.Timestamp;
 
-import com.cooksys.ftd.socialmedia.entity.Profile;
-
 public class UserDto {
 
 	private String username;
-	private Profile profile;
+	private ProfileDto profile;
 	private Timestamp joined;
 
 	public String getUsername() {
@@ -18,11 +16,11 @@ public class UserDto {
 		this.username = username;
 	}
 
-	public Profile getProfile() {
+	public ProfileDto getProfile() {
 		return profile;
 	}
 
-	public void setProfile(Profile profile) {
+	public void setProfile(ProfileDto profile) {
 		this.profile = profile;
 	}
 

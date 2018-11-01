@@ -8,4 +8,6 @@ import com.cooksys.ftd.socialmedia.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+	User getUserByUsername(String username);
+
 }

@@ -23,8 +23,7 @@ public interface UserMapper {
 
 	@Mappings({ 
 		@Mapping(target = "username", source = "credentials.username"),
-		@Mapping(target = "credentials.username", source = "credentials.username"),
-		@Mapping(target = "credentials.password", source = "credentials.password")
+		@Mapping(target = "password", source = "credentials.password")
 		})
 	User CredentialProfileDtoToUser(CredentialProfileDto dto);
 	
