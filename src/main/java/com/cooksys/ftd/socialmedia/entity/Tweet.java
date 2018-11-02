@@ -55,11 +55,11 @@ public class Tweet {
 	@JoinColumn
 	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private Set<HashTag> hashTags;
-	
+
 	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "likes")
 	@Where(clause = "deleted = false")
 	private Set<User> likers = new HashSet<>();
-	
+
 	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "mentions")
 	@Where(clause = "deleted = false")
 	private Set<User> mentioned = new HashSet<>();
@@ -72,7 +72,6 @@ public class Tweet {
 	@Where(clause = "deleted = false")
 	private Set<Tweet> reposts = new HashSet<>();
 
-	
 	public Set<User> getMentioned() {
 		return mentioned;
 	}
@@ -104,11 +103,10 @@ public class Tweet {
 	public void setHashTags(Set<HashTag> hashTags) {
 		this.hashTags = hashTags;
 	}
-	
+
 	public void addLiker(User liker) {
 		this.likers.add(liker);
 	}
-	
 
 	public Set<User> getLikers() {
 		return likers;
@@ -117,7 +115,6 @@ public class Tweet {
 	public void setLikers(Set<User> likers) {
 		this.likers = likers;
 	}
-
 
 	public Type getType() {
 		Type tweetType = Type.BAD;

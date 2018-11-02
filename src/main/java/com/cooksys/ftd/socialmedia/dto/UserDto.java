@@ -31,7 +31,5 @@ public class UserDto {
 	public void setJoined(Timestamp joined) {
 		this.joined = joined;
 	}
-	
-	
-	
+
 }

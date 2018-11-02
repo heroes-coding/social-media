@@ -21,10 +21,8 @@ public interface UserMapper {
 
 	List<User> dtosToEntities(List<UserDto> dtos);
 
-	@Mappings({ 
-		@Mapping(target = "username", source = "credentials.username"),
-		@Mapping(target = "password", source = "credentials.password")
-		})
+	@Mappings({ @Mapping(target = "username", source = "credentials.username"),
+			@Mapping(target = "password", source = "credentials.password") })
 	User CredentialProfileDtoToUser(CredentialProfileDto dto);
-	
+
 }

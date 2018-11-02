@@ -12,7 +12,7 @@ import com.cooksys.ftd.socialmedia.entity.Tweet;
 public interface HashTagRepository extends JpaRepository<HashTag, Integer> {
 
 	HashTag getHashTagByLabel(String lowerCase);
-	
+
 	@Query("SELECT h FROM HashTag h ORDER BY h.label")
 	List<HashTag> findAll();
 

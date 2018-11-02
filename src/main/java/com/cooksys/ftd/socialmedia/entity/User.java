@@ -16,23 +16,23 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
-
+import org.hibernate.annotations.Where;
 
 @Entity
 public class User {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@Column(unique = true)
 	private String username;
 	@Column
 	private String password;
-	
+
 	@Column
 	private boolean deleted;
-	
+
 	public boolean isDeleted() {
 		return deleted;
 	}
@@ -45,18 +45,42 @@ public class User {
 	@CreationTimestamp
 	private Timestamp joined;
 
-	
-	
 	@JoinColumn
-	@OneToOne(orphanRemoval = true, cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Profile profile;
-	
+
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@Where(clause = "deleted = false")
 	private Set<Tweet> mentions = new HashSet<>();
-	
+
 	@ManyToMany(cascade = CascadeType.ALL)
+	@Where(clause = "deleted = false")
 	private Set<Tweet> likes = new HashSet<>();
-	
+
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@Where(clause = "deleted = false")
+	private Set<User> followers = new HashSet<>();
+
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@Where(clause = "deleted = false")
+	private Set<User> following = new HashSet<>();
+
+	public Set<User> getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(Set<User> followers) {
+		this.followers = followers;
+	}
+
+	public Set<User> getFollowing() {
+		return following;
+	}
+
+	public void setFollowing(Set<User> following) {
+		this.following = following;
+	}
+
 	public Set<Tweet> getLikes() {
 		return likes;
 	}
@@ -156,9 +180,4 @@ public class User {
 		return true;
 	}
 
-	
-	
-	
-	
-	
 }

@@ -27,7 +27,7 @@ public class HashTagController {
 	public List<TweetDto> getTweetsByTag(@PathVariable("label") String label) throws HashTagError {
 		return hashTagService.getTweetsByTag(label);
 	}
-	
+
 	@GetMapping("tags")
 	public List<HashTagDto> getHashTags() {
 		return hashTagService.getHashTags();

@@ -1,15 +1,14 @@
 package com.cooksys.ftd.socialmedia.dto;
 
 public class ProfileDto {
-	
+
 	private String firstName;
 
 	private String lastName;
-	
-	private String email;
-	
-	private String phone;
 
+	private String email;
+
+	private String phone;
 
 	public String getFirstName() {
 		return firstName;
@@ -42,7 +41,5 @@ public class ProfileDto {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
-	
-	
+
 }

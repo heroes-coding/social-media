@@ -43,8 +43,8 @@ public class HashTagService {
     	List<Tweet> activeTweets = new ArrayList<>();
     	for (Tweet t: tweets) {
     		if (!t.isDeleted()) {
-    			activeTweets.add(t);
-    		}
+				activeTweets.add(t);
+			}
     	}
     	activeTweets.sort((Tweet a, Tweet b) -> b.getPosted().compareTo(a.getPosted()));
     	return tweetMapper.entitiesToDtos(activeTweets);

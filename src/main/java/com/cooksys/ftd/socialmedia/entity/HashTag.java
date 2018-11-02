@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -22,14 +21,14 @@ public class HashTag {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@Column
 	private String label;
-	
+
 	@Column
 	@CreationTimestamp
 	private Timestamp firstUsed;
-	
+
 	@Column
 	@UpdateTimestamp
 	private Timestamp lastUsed;
@@ -37,9 +36,10 @@ public class HashTag {
 	@Column
 	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "hashTags")
 	private List<Tweet> tweets;
-	
-	public HashTag() {}
-	
+
+	public HashTag() {
+	}
+
 	public HashTag(String label) {
 		super();
 		this.label = label;
@@ -101,7 +101,5 @@ public class HashTag {
 	public void setLastUsed(Timestamp lastUsed) {
 		this.lastUsed = lastUsed;
 	}
-	
-	
-	
+
 }

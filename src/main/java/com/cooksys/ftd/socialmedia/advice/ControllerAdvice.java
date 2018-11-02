@@ -21,11 +21,11 @@ public class ControllerAdvice {
 
 	@ExceptionHandler(TweetError.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ResponseMessage tweetError(UserError e) {
+	public ResponseMessage tweetError(TweetError e) {
 		System.out.println(e.getMessage());
 		return new ResponseMessage(e.getMessage());
 	}
-	
+
 	@ExceptionHandler(HashTagError.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseMessage hashTagError(HashTagError e) {

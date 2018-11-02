@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.cooksys.ftd.socialmedia.advice.exceptions.TweetError;
 import com.cooksys.ftd.socialmedia.advice.exceptions.UserError;
+import com.cooksys.ftd.socialmedia.dto.ContextDto;
 import com.cooksys.ftd.socialmedia.dto.CredentialDto;
 import com.cooksys.ftd.socialmedia.dto.HashTagDto;
 import com.cooksys.ftd.socialmedia.dto.NewTweetDto;
@@ -111,8 +112,6 @@ public class TweetService {
 		return tweetMapper.entityToTweet(tweet);
 	}
 
-
-
 	public void likeTweet(CredentialDto credentials, Integer id) throws UserError, TweetError {
 		User user = userService.getUser(credentials);
 		Tweet tweet = getTweet(id);
@@ -146,13 +145,12 @@ public class TweetService {
 		if (tweet.isDeleted()) {
 			throw new TweetError(String.format("Tweet %d was deleted", id));
 		}
+		if (tweet.getAuthor().isDeleted()) {
+			throw new TweetError(String.format("The author of tweet %d was deleted", id));
+		}
 		return tweet;
 	}
 
-	public List<TweetDto> getTweets() {
-		return tweetMapper.entitiesToDtos(this.tweetRepository.getAllTweets());
-	}
-	
 	public List<UserDto> getLikers(Integer id) throws TweetError {
 		Tweet tweet = getTweet(id);
 		return userMapper.entitiesToDtos(new ArrayList<>(tweet.getLikers()));
@@ -163,19 +161,65 @@ public class TweetService {
 		return hashTagMapper.entitiesToDtos(new ArrayList<>(tweet.getHashTags()));
 	}
 
+	private List<Tweet> filterDeletedAuthorTweets(List<Tweet> tweets) {
+		List<Tweet> filteredTweets = new ArrayList<>();
+		for (Tweet t : tweets) {
+			if (!t.getAuthor().isDeleted()) {
+				filteredTweets.add(t);
+			}
+		}
+		return filteredTweets;
+	}
+
+	public List<TweetDto> getTweets() {
+		return tweetMapper.entitiesToDtos(filterDeletedAuthorTweets(this.tweetRepository.getAllTweets()));
+	}
+
 	public List<TweetDto> getTweetReplies(Integer id) throws TweetError {
 		Tweet tweet = getTweet(id);
-		return tweetMapper.entitiesToDtos(new ArrayList<>(tweet.getReplies()));
+		List<Tweet> replies = filterDeletedAuthorTweets(new ArrayList<>(tweet.getReplies()));
+		replies.sort((Tweet a, Tweet b) -> a.getPosted().compareTo(b.getPosted()));
+		return tweetMapper.entitiesToDtos(replies);
 	}
 
 	public List<TweetDto> getTweetReposts(Integer id) throws TweetError {
 		Tweet tweet = getTweet(id);
-		return tweetMapper.entitiesToDtos(new ArrayList<>(tweet.getReposts()));
+		List<Tweet> reposts = filterDeletedAuthorTweets(new ArrayList<>(tweet.getReposts()));
+		reposts.sort((Tweet a, Tweet b) -> a.getPosted().compareTo(b.getPosted()));
+		return tweetMapper.entitiesToDtos(reposts);
 	}
 
 	public List<UserDto> getTweetMentions(Integer id) throws TweetError {
 		Tweet tweet = getTweet(id);
 		return userMapper.entitiesToDtos(new ArrayList<>(tweet.getMentioned()));
+	}
+
+	private void addReplies(List<TweetDto> after, Tweet tweet) {
+		for (Tweet reply : tweet.getReplies()) {
+			addReplies(after, reply);
+		}
+		if (tweet.isDeleted() || tweet.getAuthor().isDeleted()) {
+			return;
+		}
+		after.add(tweetMapper.entityToTweet(tweet));
+	}
+
+	public ContextDto getTweetContext(Integer id) throws TweetError {
+		Tweet tweet = getTweet(id);
+		List<TweetDto> before = new ArrayList<>();
+		List<TweetDto> after = new ArrayList<>();
+		Tweet beforeTweet = tweet.getInReplyTo();
+		while (beforeTweet != null) {
+			if (!beforeTweet.getAuthor().isDeleted()) {
+				before.add(tweetMapper.entityToTweet(beforeTweet));
+			}
+			beforeTweet = beforeTweet.getInReplyTo();
+		}
+		for (Tweet reply : tweet.getReplies()) {
+			addReplies(after, reply);
+		}
+		ContextDto context = new ContextDto(tweetMapper.entityToTweet(tweet), before, after);
+		return context;
 	}
 
 }

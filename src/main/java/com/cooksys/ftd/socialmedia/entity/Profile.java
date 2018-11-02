@@ -8,20 +8,20 @@ import javax.persistence.Id;
 
 @Entity
 public class Profile {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@Column
 	private String firstName;
-	
+
 	@Column
 	private String lastName;
-	
+
 	@Column(unique = true)
 	private String email;
-	
+
 	@Column
 	private String phone;
 
@@ -113,7 +113,5 @@ public class Profile {
 		return "Profile [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
 				+ ", phone=" + phone + "]";
 	}
-	
-	
-	
+
 }

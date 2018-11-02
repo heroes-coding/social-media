@@ -3,6 +3,7 @@ package com.cooksys.ftd.socialmedia.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.ftd.socialmedia.advice.exceptions.TweetError;
 import com.cooksys.ftd.socialmedia.advice.exceptions.UserError;
-import com.cooksys.ftd.socialmedia.dto.CredentialDto;
+import com.cooksys.ftd.socialmedia.dto.ContextDto;
+import com.cooksys.ftd.socialmedia.dto.CredentialProfileDto;
 import com.cooksys.ftd.socialmedia.dto.HashTagDto;
 import com.cooksys.ftd.socialmedia.dto.NewTweetDto;
 import com.cooksys.ftd.socialmedia.dto.TweetDto;
@@ -41,9 +43,9 @@ public class TweetController {
 	}
 
 	@PostMapping("tweets/{id}/repost")
-	public TweetDto replyToTweet(@RequestBody CredentialDto credentials, @PathVariable("id") Integer id)
+	public TweetDto replyToTweet(@RequestBody CredentialProfileDto dto, @PathVariable("id") Integer id)
 			throws UserError, TweetError {
-		return this.tweetService.repostTweet(credentials, id);
+		return this.tweetService.repostTweet(dto.getCredentials(), id);
 	}
 
 	@GetMapping("tweets")
@@ -82,9 +84,21 @@ public class TweetController {
 		return this.tweetService.getTweetDto(id);
 	}
 
-	@PostMapping("tweets/{id}/like")
-	public void likeTweet(@RequestBody CredentialDto credentials, @PathVariable("id") Integer id)
-			throws UserError, TweetError {
-		this.tweetService.likeTweet(credentials, id);
+	@GetMapping("tweets/{id}/context")
+	public ContextDto getTweetContext(@PathVariable("id") Integer id) throws TweetError {
+		return this.tweetService.getTweetContext(id);
 	}
+
+	@DeleteMapping("tweets/{id}")
+	public TweetDto deleteTweet(@RequestBody CredentialProfileDto dto, @PathVariable("id") Integer id)
+			throws UserError, TweetError {
+		return this.tweetService.deleteTweet(dto.getCredentials(), id);
+	}
+
+	@PostMapping("tweets/{id}/like")
+	public void likeTweet(@RequestBody CredentialProfileDto dto, @PathVariable("id") Integer id)
+			throws UserError, TweetError {
+		this.tweetService.likeTweet(dto.getCredentials(), id);
+	}
+
 }
