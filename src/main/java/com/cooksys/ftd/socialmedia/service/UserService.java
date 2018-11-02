@@ -36,6 +36,14 @@ public class UserService {
     	return user != null;
     }
 
+    public User getUserOrNull(String username) {
+    	return userRepository.getUserByUsernameAndDeletedFalse(username);
+    }
+    
+    public User saveUser(User user) {
+    	return userRepository.save(user);
+    }
+    
     public User getUser(CredentialDto credentials) throws UserError {
     	User user = getUser(credentials.getUsername());
     	checkCredentials(user, credentials);

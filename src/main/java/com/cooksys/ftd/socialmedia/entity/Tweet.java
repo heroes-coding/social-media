@@ -1,6 +1,7 @@
 package com.cooksys.ftd.socialmedia.entity;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Where;
 
 @Entity
 public class Tweet {
@@ -51,41 +53,26 @@ public class Tweet {
 	private boolean deleted;
 
 	@JoinColumn
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private Set<HashTag> hashTags;
 	
-	@JoinColumn
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "likes")
-	private Set<User> likers;
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "likes")
+	@Where(clause = "deleted = false")
+	private Set<User> likers = new HashSet<>();
 	
-	@JoinColumn
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "mentions")
-	private Set<User> mentioned;
-	
-	@JoinColumn
-	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "inReplyTo")
-	private Set<Tweet> replies;
-	
-	@JoinColumn
-	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "repostOf")
-	private Set<Tweet> reposts;
-	
-	public Set<HashTag> getHashTags() {
-		return hashTags;
-	}
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "mentions")
+	@Where(clause = "deleted = false")
+	private Set<User> mentioned = new HashSet<>();
 
-	public void setHashTags(Set<HashTag> hashTags) {
-		this.hashTags = hashTags;
-	}
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "inReplyTo")
+	@Where(clause = "deleted = false")
+	private Set<Tweet> replies = new HashSet<>();
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "repostOf")
+	@Where(clause = "deleted = false")
+	private Set<Tweet> reposts = new HashSet<>();
+
 	
-	public Set<User> getLikers() {
-		return likers;
-	}
-
-	public void setLikers(Set<User> likers) {
-		this.likers = likers;
-	}
-
 	public Set<User> getMentioned() {
 		return mentioned;
 	}
@@ -109,6 +96,28 @@ public class Tweet {
 	public void setReposts(Set<Tweet> reposts) {
 		this.reposts = reposts;
 	}
+
+	public Set<HashTag> getHashTags() {
+		return hashTags;
+	}
+
+	public void setHashTags(Set<HashTag> hashTags) {
+		this.hashTags = hashTags;
+	}
+	
+	public void addLiker(User liker) {
+		this.likers.add(liker);
+	}
+	
+
+	public Set<User> getLikers() {
+		return likers;
+	}
+
+	public void setLikers(Set<User> likers) {
+		this.likers = likers;
+	}
+
 
 	public Type getType() {
 		Type tweetType = Type.BAD;

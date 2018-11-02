@@ -1,6 +1,7 @@
 package com.cooksys.ftd.socialmedia.entity;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -50,15 +51,12 @@ public class User {
 	@OneToOne(orphanRemoval = true, cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	private Profile profile;
 	
-	@JoinColumn
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
-	private Set<Tweet> likes;
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	private Set<Tweet> mentions = new HashSet<>();
 	
-	@JoinColumn
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
-	private Set<Tweet> mentions;
+	@ManyToMany(cascade = CascadeType.ALL)
+	private Set<Tweet> likes = new HashSet<>();
 	
-
 	public Set<Tweet> getLikes() {
 		return likes;
 	}

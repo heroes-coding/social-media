@@ -13,12 +13,5 @@ public interface TweetRepository extends JpaRepository<Tweet, Integer> {
 	List<Tweet> getAllTweets();
 
 	Tweet getTweetById(Integer id);
-	/*
-	 * User getUserByUsernameAndDeletedFalse(String username);
-	 * 
-	 * User getUserByUsername(String username);
-	 * 
-	 * @Query("SELECT u FROM User u WHERE u.deleted = false ORDER BY u.username")
-	 * List<User> findAll();
-	 */
+
 }

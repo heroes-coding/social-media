@@ -35,7 +35,7 @@ public class HashTag {
 	private Timestamp lastUsed;
 
 	@Column
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "hashTags")
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "hashTags")
 	private List<Tweet> tweets;
 	
 	public HashTag() {}
